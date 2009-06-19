@@ -40,4 +40,6 @@ like($rcvd[0], qr{localhost}, "localhost in topmost header");
 like($rcvd[1], qr{DFF5B134875}, "middle header in middle");
 like($rcvd[2], qr{B3533317DE}, "first hop at the bottom");
 
+done_testing;
+
 1;
