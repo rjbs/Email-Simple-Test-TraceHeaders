@@ -1,0 +1,7 @@
+Revision history for {{$dist->name}}
+
+{{$NEXT}}
+          repackage to add META.yml
+
+0.091700  2009-06-19
+          first release
