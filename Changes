@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.091701  2011-10-15 18:12:08 Asia/Tokyo
           repackage to add META.yml
 
 0.091700  2009-06-19
