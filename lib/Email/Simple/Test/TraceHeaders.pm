@@ -17,8 +17,10 @@ use Sub::Exporter -setup => {
 # For now, we'll only generate one style of Received header: postfix
 # It's what I encounter the most, and it's simple and straightforward.
 # In the future, we'll be flexible, maybe. -- rjbs, 2009-06-19
-my $POSTFIX_FMT = q{from %s (%s [%s]) by %s (Postfix) with ESMTP id %s }
-                . q{for <%s>; %s};
+my %POSTFIX_FMT = (
+  for   => q{from %s (%s [%s]) by %s (Postfix) with ESMTP id %s for <%s>; %s},
+  nofor => q{from %s (%s [%s]) by %s (Postfix) with ESMTP id %s%s; %s},
+);
 
 =head1 METHODS
 
@@ -62,18 +64,24 @@ sub trace_headers {
       }
     }
 
-    push @received, sprintf $POSTFIX_FMT,
+    my $env_to = ref $hop{env_to} ?   $hop{env_to}
+               :     $hop{env_to} ? [ $hop{env_to} ]
+               :                    [              ];
+
+    my $fmt = @$env_to == 1 ? $POSTFIX_FMT{for} : $POSTFIX_FMT{nofor};
+
+    push @received, sprintf $fmt,
       $hop{from_helo},
       $hop{from_rdns},
       $hop{from_ip},
       $hop{by_name}, # by_ip someday?
       $hop{queue_id},
-      $hop{env_to},
+      @$env_to == 1 ? $env_to->[0] : '',
       (Email::Date::Format::email_gmdate($hop{time}) . ' (GMT)');
 
     %last = %hop;
   }
-  
+
   return [ reverse @received ];
 }
 
